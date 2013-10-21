@@ -1,0 +1,30 @@
+*template.txt* A short multi line description of your plugin
+
+===============================================================================
+CONTENTS                                                    *template-contents*
+
+    1. Intro ................................................. |template-intro|
+    2. Installation ................................... |template-installation|
+    3. Requirements .................................... |templte-requirements|
+    4. Usage ................................................. |template-usage|
+    5. Licence ............................................. |template-licence|
+===============================================================================
+1. Intro                                                    *test-runner-intro*
+
+Overview of plugin
+
+2. Installation                                         *template-installation*
+
+How to install the plugin
+
+3. Requirements                                         *template-requirements*
+
+What additional programs are required to run the plugin
+
+4. Usage                                                       *template-usage*
+
+How to use the plugin. What functions does it give the user?
+
+5. Licence                                                   *template-licence*
+
+This is open source make sure to include a licence
