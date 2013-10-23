@@ -14,68 +14,68 @@ def get_user_inputs():
     plugin_name = raw_input("Enter the name of your plugin => ")
     file_specific = raw_input("Is this is file specific plugin? (y/n) => ")
     plugin_type = None
-    paths = get_paths(plugin_name, plugin_type)
     if file_specific in ['y', 'Y']:
         plugin_type = raw_input("What file type is it specific for? => ")
         paths = get_paths(plugin_name, plugin_type)
         return paths, plugin_name, plugin_type
+    paths = get_paths(plugin_name, plugin_type)
     return paths, plugin_name, plugin_type
 
 
 def get_paths(plugin_name, plugin_type):
     paths = {}
     paths['current_dir'] = dirname(abspath(getfile(currentframe())))
-    paths['path_to_new_plugin'] = "{}/{}/".format(paths['current_dir'], plugin_name)
+    paths['new_plugin_path'] = "{}/{}/".format(paths['current_dir'], plugin_name)
     paths['path_to_templates'] = "{}/templates".format(paths['current_dir'])
     paths['template_tests_dir'] = sep.join([paths['path_to_templates'], 'tests', ''])
     paths['new_plugin_tests_dir'] = sep.join([paths['current_dir'], plugin_name, 'plugin', 'tests'])
     paths['template_doc_dir'] = sep.join([paths['path_to_templates'], 'doc', ''])
     paths['new_plugin_doc_dir'] = sep.join([paths['current_dir'], plugin_name, 'doc'])
     paths['template_py_file'] = sep.join([paths['path_to_templates'], 'template.py'])
-    paths['plugin_py_file'] = sep.join([paths['path_to_new_plugin'], 'plugin', 'template.py'])
+    paths['plugin_py'] = sep.join([paths['new_plugin_path'], 'plugin', 'template.py'])
     paths['template_vim_file'] = sep.join([paths['path_to_templates'], 'template.vim'])
-    paths['plugin_vim_file'] = sep.join([paths['path_to_new_plugin'], 'plugin', 'template.vim'])
+    paths['plugin_vim'] = sep.join([paths['new_plugin_path'], 'plugin', 'template.vim'])
     paths['template_readme_file'] = sep.join([paths['path_to_templates'], 'README.md'])
-    paths['plugin_readme_file'] = sep.join([paths['path_to_new_plugin'], 'README.md'])
+    paths['plugin_readme_file'] = sep.join([paths['new_plugin_path'], 'README.md'])
     if plugin_type:
-        paths['plugin_vim_file'] = sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type, 'template.vim'])
-        paths['plugin_py_file'] = sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type, 'template.py'])
-        paths['new_plugin_tests_dir'] = sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type, 'tests'])
+        paths['plugin_vim'] = sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, 'template.vim'])
+        paths['plugin_py'] = sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, 'template.py'])
+        paths['new_plugin_tests_dir'] = sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, 'tests'])
     return paths
 
 
 def build_scaffold_based_on_template(paths, plugin_type):
-    makedirs("{}/".format(paths['path_to_new_plugin']))
+    makedirs("{}/".format(paths['new_plugin_path']))
     if plugin_type:
-        makedirs("{}/".format(sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type])))
+        makedirs("{}/".format(sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type])))
     shutil.copytree(paths['template_tests_dir'], paths['new_plugin_tests_dir'])
     shutil.copytree(paths['template_doc_dir'], paths['new_plugin_doc_dir'])
-    shutil.copyfile(paths['template_py_file'], paths['plugin_py_file'])
-    shutil.copyfile(paths['template_vim_file'], paths['plugin_vim_file'])
+    shutil.copyfile(paths['template_py_file'], paths['plugin_py'])
+    shutil.copyfile(paths['template_vim_file'], paths['plugin_vim'])
     shutil.copyfile(paths['template_readme_file'], paths['plugin_readme_file'])
 
 
 def customize_template(paths, plugin_name, plugin_type):
-    plugin_underscored = plugin_name.replace("-", "_")
+    plugin_under = plugin_name.replace("-", "_")
     customize_readme(paths, plugin_name)
     customize_doc(paths, plugin_name)
-    customize_tests(paths, plugin_name, plugin_underscored)
-    customize_py_file(paths, plugin_underscored)
-    customize_vim_file(paths, plugin_underscored)
+    customize_tests(paths, plugin_name, plugin_under)
+    customize_py_file(paths, plugin_under)
+    customize_vim_file(paths, plugin_under)
+    custom_rename(paths, plugin_under, plugin_name, plugin_type)
+
+
+def custom_rename(paths, plugin_under, plugin_name, plugin_type):
     rename(sep.join([paths['new_plugin_tests_dir'], 'template_tests.py']),
-           sep.join([paths['new_plugin_tests_dir'], plugin_underscored + '_tests.py']))
+           sep.join([paths['new_plugin_tests_dir'], plugin_under + '_tests.py']))
     rename(sep.join([paths['new_plugin_doc_dir'], 'template.txt']),
            sep.join([paths['new_plugin_doc_dir'], plugin_name + '.txt']))
     if plugin_type:
-        rename(paths['plugin_py_file'],
-               sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type, plugin_underscored + '.py']))
-        rename(paths['plugin_vim_file'],
-               sep.join([paths['path_to_new_plugin'], 'ftplugin', plugin_type, plugin_underscored + '.vim']))
+        rename(paths['plugin_py'], sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, plugin_under + '.py']))
+        rename(paths['plugin_vim'], sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, plugin_under + '.vim']))
     else:
-        rename(paths['plugin_py_file'],
-               sep.join([paths['path_to_new_plugin'], 'plugin', plugin_underscored + '.py']))
-        rename(paths['plugin_vim_file'],
-               sep.join([paths['path_to_new_plugin'], 'plugin', plugin_underscored + '.vim']))
+        rename(paths['plugin_py'], sep.join([paths['new_plugin_path'], 'plugin', plugin_under + '.py']))
+        rename(paths['plugin_vim'], sep.join([paths['new_plugin_path'], 'plugin', plugin_under + '.vim']))
 
 
 def customize_readme(paths, plugin_name):
@@ -103,27 +103,27 @@ def customize_doc(paths, plugin_name):
     write_to_file(doc_contents, doc_file_path)
 
 
-def customize_tests(paths, plugin_name, plugin_underscored):
+def customize_tests(paths, plugin_name, plugin_under):
     plugin_camel = "".join([word.title() for word in plugin_name.split("-")])
     tests_file_path = sep.join([paths['new_plugin_tests_dir'], 'template_tests.py'])
     tests_contents = get_file_contents(tests_file_path)
-    tests_contents[1] = "import {} as sut\n".format(plugin_underscored)
+    tests_contents[1] = "import {} as sut\n".format(plugin_under)
     tests_contents[4] = "class {}Tests(unittest.TestCase):\n".format(plugin_camel)
-    tests_contents[7] = "        result = sut.{}_example()\n".format(plugin_underscored)
+    tests_contents[7] = "        result = sut.{}_example()\n".format(plugin_under)
     write_to_file(tests_contents, tests_file_path)
 
 
-def customize_py_file(paths, plugin_underscored):
-    py_file_contents = get_file_contents(paths['plugin_py_file'])
-    py_file_contents[0] = "def {}_example():\n".format(plugin_underscored)
-    write_to_file(py_file_contents, paths['plugin_py_file'])
+def customize_py_file(paths, plugin_under):
+    py_file_contents = get_file_contents(paths['plugin_py'])
+    py_file_contents[0] = "def {}_example():\n".format(plugin_under)
+    write_to_file(py_file_contents, paths['plugin_py'])
 
 
-def customize_vim_file(paths, plugin_underscored):
-    vim_file_contents = get_file_contents(paths['plugin_vim_file'])
-    vim_file_contents[13] = "from {} import {}_example\n".format(plugin_underscored, plugin_underscored)
-    vim_file_contents[16] = "    print({}_example())\n".format(plugin_underscored)
-    write_to_file(vim_file_contents, paths['plugin_vim_file'])
+def customize_vim_file(paths, plugin_under):
+    vim_file_contents = get_file_contents(paths['plugin_vim'])
+    vim_file_contents[13] = "from {} import {}_example\n".format(plugin_under, plugin_under)
+    vim_file_contents[16] = "    print({}_example())\n".format(plugin_under)
+    write_to_file(vim_file_contents, paths['plugin_vim'])
 
 
 def get_file_contents(file_path):

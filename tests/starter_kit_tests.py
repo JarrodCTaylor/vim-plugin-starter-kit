@@ -10,7 +10,8 @@ from create_plugin_scaffold import create_scaffold
 class ScaffoldTest(unittest.TestCase):
 
     def tearDown(self):
-        shutil.rmtree("/home/jrock/Dropbox/vim-plugin-starter-kit/vim-tests/")
+        current_dir = dirname(dirname(dirname(abspath(getfile(currentframe())))))
+        shutil.rmtree(current_dir + "/vim-plugin-starter-kit/vim-tests/")
 
     def test_create_scaffold_non_file_specific(self):
         test_new_plugin_dir = sep.join([dirname(dirname(abspath(getfile(currentframe())))), 'vim-tests', ''])
