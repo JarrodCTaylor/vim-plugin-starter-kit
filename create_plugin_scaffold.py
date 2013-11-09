@@ -5,21 +5,22 @@ import shutil
 
 
 def create_scaffold():
-    paths, plugin_name, plugin_type = get_user_inputs()
+    paths, plugin_name, plugin_type, github_user = get_user_inputs()
     build_scaffold_based_on_template(paths, plugin_type)
-    customize_template(paths, plugin_name, plugin_type)
+    customize_template(paths, plugin_name, plugin_type, github_user)
 
 
 def get_user_inputs():
     plugin_name = raw_input("Enter the name of your plugin => ")
+    github_user = raw_input("Enter your github user name => ")
     file_specific = raw_input("Is this is file specific plugin? (y/n) => ")
     plugin_type = None
     if file_specific in ['y', 'Y']:
         plugin_type = raw_input("What file type is it specific for? => ")
         paths = get_paths(plugin_name, plugin_type)
-        return paths, plugin_name, plugin_type
+        return paths, plugin_name, plugin_type, github_user
     paths = get_paths(plugin_name, plugin_type)
-    return paths, plugin_name, plugin_type
+    return paths, plugin_name, plugin_type, github_user
 
 
 def get_paths(plugin_name, plugin_type):
@@ -55,9 +56,9 @@ def build_scaffold_based_on_template(paths, plugin_type):
     shutil.copyfile(paths['template_readme_file'], paths['plugin_readme_file'])
 
 
-def customize_template(paths, plugin_name, plugin_type):
+def customize_template(paths, plugin_name, plugin_type, github_user):
     plugin_under = plugin_name.replace("-", "_")
-    customize_readme(paths, plugin_name)
+    customize_readme(paths, plugin_name, github_user)
     customize_doc(paths, plugin_name)
     customize_tests(paths, plugin_name, plugin_under)
     customize_py_file(paths, plugin_under)
@@ -78,10 +79,14 @@ def custom_rename(paths, plugin_under, plugin_name, plugin_type):
         rename(paths['plugin_vim'], sep.join([paths['new_plugin_path'], 'plugin', plugin_under + '.vim']))
 
 
-def customize_readme(paths, plugin_name):
+def customize_readme(paths, plugin_name, github_user):
     readme_contents = get_file_contents(paths['plugin_readme_file'])
     readme_contents[0] = "# {0}\n".format(plugin_name)
     readme_contents[1] = "\n"
+    readme_contents[7] = "  - `git clone https://github.com/{0}/{1} ~/.vim/bundle/{1}`\n".format(github_user, plugin_name)
+    readme_contents[9] = "  - Add `Bundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
+    readme_contents[12] = "  - Add `NeoBundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
+    readme_contents[15] = "  - Add `Plug 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
     write_to_file(readme_contents, paths['plugin_readme_file'])
 
 
@@ -91,15 +96,13 @@ def customize_doc(paths, plugin_name):
     doc_contents[0] = "*{}.txt* ".format(plugin_name) + " ".join(doc_contents[0].split(" ")[1:])
     doc_contents[3] = "CONTENTS {0}*{1}*\n".format(" " * (68 - len(plugin_name)), plugin_name)
     doc_contents[5] = "    1. Intro {0} |{1}-intro|\n".format("." * (57 - len(plugin_name)), plugin_name)
-    doc_contents[6] = "    2. Installation {0} |{1}-installation|\n".format("." * (43 - len(plugin_name)), plugin_name)
-    doc_contents[7] = "    3. Requirements {0} |{1}-requirements|\n".format("." * (43 - len(plugin_name)), plugin_name)
-    doc_contents[8] = "    4. Usage {0} |{1}-usage|\n".format("." * (57 - len(plugin_name)), plugin_name)
-    doc_contents[9] = "    5. Licence {0} |{1}-licence|\n".format("." * (53 - len(plugin_name)), plugin_name)
-    doc_contents[11] = "1. Intro{0}*{1}-intro*\n".format(" " * (63 - len(plugin_name)), plugin_name)
-    doc_contents[15] = "2. Installation{0}*{1}-installation*\n".format(" " * (49 - len(plugin_name)), plugin_name)
-    doc_contents[19] = "3. Requirements{0}*{1}-requirements*\n".format(" " * (49 - len(plugin_name)), plugin_name)
-    doc_contents[23] = "4. Usage{0}*{1}-usage*\n".format(" " * (63 - len(plugin_name)), plugin_name)
-    doc_contents[27] = "5. Licence{0}*{1}-licence*\n".format(" " * (59 - len(plugin_name)), plugin_name)
+    doc_contents[6] = "    2. Requirements {0} |{1}-requirements|\n".format("." * (43 - len(plugin_name)), plugin_name)
+    doc_contents[7] = "    3. Usage {0} |{1}-usage|\n".format("." * (57 - len(plugin_name)), plugin_name)
+    doc_contents[8] = "    4. Licence {0} |{1}-licence|\n".format("." * (53 - len(plugin_name)), plugin_name)
+    doc_contents[10] = "1. Intro{0}*{1}-intro*\n".format(" " * (63 - len(plugin_name)), plugin_name)
+    doc_contents[14] = "2. Requirements{0}*{1}-requirements*\n".format(" " * (49 - len(plugin_name)), plugin_name)
+    doc_contents[18] = "3. Usage{0}*{1}-usage*\n".format(" " * (63 - len(plugin_name)), plugin_name)
+    doc_contents[22] = "4. Licence{0}*{1}-licence*\n".format(" " * (59 - len(plugin_name)), plugin_name)
     write_to_file(doc_contents, doc_file_path)
 
 

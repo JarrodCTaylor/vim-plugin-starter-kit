@@ -16,7 +16,7 @@ class ScaffoldTest(unittest.TestCase):
     def test_create_scaffold_non_file_specific(self):
         test_new_plugin_dir = sep.join([dirname(dirname(abspath(getfile(currentframe())))), 'vim-tests', ''])
         current_dir = dirname(abspath(getfile(currentframe())))
-        with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'n']):
+        with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'JarrodCTaylor', 'n']):
             create_scaffold()
             self.assertTrue(path.isdir(test_new_plugin_dir))
             self.assertTrue(path.isfile(sep.join([test_new_plugin_dir, "plugin/tests/vim_tests_tests.py"])))
@@ -34,11 +34,13 @@ class ScaffoldTest(unittest.TestCase):
                              open(test_new_plugin_dir + "/plugin/vim_tests.py").read())
             self.assertEqual(open(current_dir + "/custom_docs/vim_tests.vim").read(),
                              open(test_new_plugin_dir + "/plugin/vim_tests.vim").read())
+            self.assertEqual(open(current_dir + "/custom_docs/README.md").read(),
+                             open(test_new_plugin_dir + "README.md").read())
 
     def test_create_scaffold_file_specific(self):
         test_new_plugin_dir = sep.join([dirname(dirname(abspath(getfile(currentframe())))), 'vim-tests', ''])
         current_dir = dirname(abspath(getfile(currentframe())))
-        with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'y', 'python']):
+        with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'JarrodCTaylor', 'y', 'python']):
             create_scaffold()
             self.assertTrue(path.isdir(test_new_plugin_dir))
             self.assertTrue(path.isfile(sep.join([test_new_plugin_dir, "ftplugin/python/tests/vim_tests_tests.py"])))
@@ -56,3 +58,5 @@ class ScaffoldTest(unittest.TestCase):
                              open(test_new_plugin_dir + "/ftplugin/python/vim_tests.py").read())
             self.assertEqual(open(current_dir + "/custom_docs/vim_tests.vim").read(),
                              open(test_new_plugin_dir + "/ftplugin/python/vim_tests.vim").read())
+            self.assertEqual(open(current_dir + "/custom_docs/README.md").read(),
+                             open(test_new_plugin_dir + "README.md").read())

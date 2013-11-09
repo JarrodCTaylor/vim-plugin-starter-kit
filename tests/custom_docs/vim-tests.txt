@@ -4,27 +4,22 @@
 CONTENTS                                                            *vim-tests*
 
     1. Intro ................................................ |vim-tests-intro|
-    2. Installation .................................. |vim-tests-installation|
-    3. Requirements .................................. |vim-tests-requirements|
-    4. Usage ................................................ |vim-tests-usage|
-    5. Licence ............................................ |vim-tests-licence|
+    2. Requirements .................................. |vim-tests-requirements|
+    3. Usage ................................................ |vim-tests-usage|
+    4. Licence ............................................ |vim-tests-licence|
 ===============================================================================
 1. Intro                                                      *vim-tests-intro*
 
 Overview of plugin
 
-2. Installation                                        *vim-tests-installation*
-
-How to install the plugin
-
-3. Requirements                                        *vim-tests-requirements*
+2. Requirements                                        *vim-tests-requirements*
 
 What additional programs are required to run the plugin
 
-4. Usage                                                      *vim-tests-usage*
+3. Usage                                                      *vim-tests-usage*
 
 How to use the plugin. What functions does it give the user?
 
-5. Licence                                                  *vim-tests-licence*
+4. Licence                                                  *vim-tests-licence*
 
 This is open source make sure to include a licence
