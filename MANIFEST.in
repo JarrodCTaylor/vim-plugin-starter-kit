@@ -1,0 +1,5 @@
+include *.md
+recursive-include * *.vim
+recursive-include * *.py
+recursive-include * *.md
+recursive-include * *.txt
