@@ -1,6 +1,5 @@
-from os import makedirs, sep, rename
+from os import makedirs, sep, rename, getcwd
 from os.path import dirname, abspath
-from inspect import currentframe, getfile
 import shutil
 
 
@@ -25,13 +24,14 @@ def get_user_inputs():
 
 def get_paths(plugin_name, plugin_type):
     paths = {}
-    paths['current_dir'] = dirname(abspath(getfile(currentframe())))
-    paths['new_plugin_path'] = "{}/{}/".format(paths['current_dir'], plugin_name)
-    paths['path_to_templates'] = "{}/templates".format(paths['current_dir'])
+
+    paths['current_dir'] = abspath(dirname(__file__))
+    paths['new_plugin_path'] = sep.join([getcwd(), plugin_name])
+    paths['path_to_templates'] = sep.join([paths['current_dir'], 'templates'])
     paths['template_tests_dir'] = sep.join([paths['path_to_templates'], 'tests', ''])
-    paths['new_plugin_tests_dir'] = sep.join([paths['current_dir'], plugin_name, 'plugin', 'tests'])
+    paths['new_plugin_tests_dir'] = sep.join([paths['new_plugin_path'], 'plugin', 'tests'])
     paths['template_doc_dir'] = sep.join([paths['path_to_templates'], 'doc', ''])
-    paths['new_plugin_doc_dir'] = sep.join([paths['current_dir'], plugin_name, 'doc'])
+    paths['new_plugin_doc_dir'] = sep.join([paths['new_plugin_path'], 'doc'])
     paths['template_py_file'] = sep.join([paths['path_to_templates'], 'template.py'])
     paths['plugin_py'] = sep.join([paths['new_plugin_path'], 'plugin', 'template.py'])
     paths['template_vim_file'] = sep.join([paths['path_to_templates'], 'template.vim'])
@@ -46,9 +46,10 @@ def get_paths(plugin_name, plugin_type):
 
 
 def build_scaffold_based_on_template(paths, plugin_type):
-    makedirs("{}/".format(paths['new_plugin_path']))
     if plugin_type:
-        makedirs("{}/".format(sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type])))
+        makedirs(sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type]))
+    else:
+        makedirs(sep.join([paths['new_plugin_path'], 'plugin']))
     shutil.copytree(paths['template_tests_dir'], paths['new_plugin_tests_dir'])
     shutil.copytree(paths['template_doc_dir'], paths['new_plugin_doc_dir'])
     shutil.copyfile(paths['template_py_file'], paths['plugin_py'])
@@ -71,22 +72,25 @@ def custom_rename(paths, plugin_under, plugin_name, plugin_type):
            sep.join([paths['new_plugin_tests_dir'], plugin_under + '_tests.py']))
     rename(sep.join([paths['new_plugin_doc_dir'], 'template.txt']),
            sep.join([paths['new_plugin_doc_dir'], plugin_name + '.txt']))
+
     if plugin_type:
-        rename(paths['plugin_py'], sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, plugin_under + '.py']))
-        rename(paths['plugin_vim'], sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, plugin_under + '.vim']))
+        new_plugin_path = sep.join([paths['new_plugin_path'], 'ftplugin', plugin_type, plugin_under])
     else:
-        rename(paths['plugin_py'], sep.join([paths['new_plugin_path'], 'plugin', plugin_under + '.py']))
-        rename(paths['plugin_vim'], sep.join([paths['new_plugin_path'], 'plugin', plugin_under + '.vim']))
+        new_plugin_path = sep.join([paths['new_plugin_path'], 'plugin', plugin_under])
+
+    rename(paths['plugin_py'], new_plugin_path + '.py')
+    rename(paths['plugin_vim'], new_plugin_path + '.vim')
 
 
 def customize_readme(paths, plugin_name, github_user):
+    params = (github_user, plugin_name)
     readme_contents = get_file_contents(paths['plugin_readme_file'])
     readme_contents[0] = "# {0}\n".format(plugin_name)
     readme_contents[1] = "\n"
-    readme_contents[7] = "  - `git clone https://github.com/{0}/{1} ~/.vim/bundle/{1}`\n".format(github_user, plugin_name)
-    readme_contents[9] = "  - Add `Bundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
-    readme_contents[12] = "  - Add `NeoBundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
-    readme_contents[15] = "  - Add `Plug 'https://github.com/{0}/{1}'` to .vimrc\n".format(github_user, plugin_name)
+    readme_contents[7] = "  - `git clone https://github.com/{0}/{1} ~/.vim/bundle/{1}`\n".format(*params)
+    readme_contents[9] = "  - Add `Bundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(*params)
+    readme_contents[12] = "  - Add `NeoBundle 'https://github.com/{0}/{1}'` to .vimrc\n".format(*params)
+    readme_contents[15] = "  - Add `Plug 'https://github.com/{0}/{1}'` to .vimrc\n".format(*params)
     write_to_file(readme_contents, paths['plugin_readme_file'])
 
 
@@ -111,8 +115,8 @@ def customize_tests(paths, plugin_name, plugin_under):
     tests_file_path = sep.join([paths['new_plugin_tests_dir'], 'template_tests.py'])
     tests_contents = get_file_contents(tests_file_path)
     tests_contents[1] = "import {} as sut\n".format(plugin_under)
-    tests_contents[4] = "class {}Tests(unittest.TestCase):\n".format(plugin_camel)
-    tests_contents[7] = "        result = sut.{}_example()\n".format(plugin_under)
+    tests_contents[5] = "class {}Tests(unittest.TestCase):\n".format(plugin_camel)
+    tests_contents[8] = "        result = sut.{}_example()\n".format(plugin_under)
     write_to_file(tests_contents, tests_file_path)
 
 
