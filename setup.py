@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="scaffold-vim-plugin",
+    name="vim-plugin-starter-kit",
     version='0.0.1',
     description="A tool that creates a scafold for Vim plugins to be written in Python.",
     long_description=file('README.md').read(),
@@ -21,7 +21,7 @@ setup(
     test_suite='nose.collector',
     entry_points={
         'console_scripts': [
-            'scaffold-vim-plugin = scaffold_vim_plugin.create_plugin_scaffold:create_scaffold'
+            'vim-plugin-starter-kit = vim_plugin_starter_kit.create_plugin_scaffold:create_scaffold'
         ]
     }
 )

@@ -14,11 +14,12 @@ class ScaffoldNonFileSpecificTests(ScaffoldTestMixin, unittest.TestCase):
         self.current_dir = tempfile.mkdtemp()
         self.source_dir = abspath(dirname(__file__))
         self.test_new_plugin_dir = sep.join([self.current_dir, 'vim-tests'])
-        self.plugin_dir = sep.join([self.test_new_plugin_dir, "plugin"])
+        self.plugin_dir = sep.join([self.test_new_plugin_dir, "ftplugin", "python"])
         self.tests_dir = sep.join([self.plugin_dir, 'tests'])
         self.doc_dir = sep.join([self.test_new_plugin_dir, "doc"])
-        with mock.patch('scaffold_vim_plugin.create_plugin_scaffold.getcwd', return_value=self.current_dir):
-            with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'JarrodCTaylor', 'n']):
+
+        with mock.patch('vim_plugin_starter_kit.create_plugin_scaffold.getcwd', return_value=self.current_dir):
+            with mock.patch('__builtin__.raw_input', side_effect=['vim-tests', 'JarrodCTaylor', 'y', 'python']):
                 create_scaffold()
 
     def tearDown(self):
