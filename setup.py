@@ -17,7 +17,11 @@ setup(
         "Topic :: Text Editors",
         'Intended Audience :: Developers',
     ],
-    tests_require=file('requirements.txt').read().split('\n'),
+    tests_require=[
+        'nose',
+        'mock',
+        'flake8'
+    ],
     test_suite='nose.collector',
     entry_points={
         'console_scripts': [
