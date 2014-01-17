@@ -5,7 +5,7 @@ setup(
     name="vim-plugin-starter-kit",
     version='0.0.1',
     description="A tool that creates a scafold for Vim plugins to be written in Python.",
-    long_description=file('README.md').read(),
+    long_description=file('README.rst').read(),
     author="Jarrod C. Taylor",
     author_email="jarrod.c.taylor@gmail.com",
     url="http://github.com/JarrodCTaylor/vim-plugin-starter-kit",
