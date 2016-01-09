@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="vim-plugin-starter-kit",
-    version='0.0.1',
+    version='1.0.0',
     description="A tool that creates a scafold for Vim plugins to be written in Python.",
     long_description=file('README.rst').read(),
     author="Jarrod C. Taylor",

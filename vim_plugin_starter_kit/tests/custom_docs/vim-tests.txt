@@ -23,3 +23,5 @@ How to use the plugin. What functions does it give the user?
 4. Licence                                                  *vim-tests-licence*
 
 This is open source make sure to include a licence
+
+vim:ft=help
